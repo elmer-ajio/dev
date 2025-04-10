@@ -1,0 +1,37 @@
+{
+  "name": "server",
+  "version": "0.0.1",
+  "description": "A simple server for the app",
+  "main": "dist/src/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "swc src -d dist",
+    "start": "node dist/src/index.js",
+    "dev": "swc src -d dist && nodemon"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.6.0",
+    "@types/node": "^22.14.0",
+    "express": "^5.1.0",
+    "prisma": "^6.6.0"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.6.0",
+    "@swc/core": "^1.11.18",
+    "@swc/helpers": "^0.5.15",
+    "@types/debug": "^4.1.12",
+    "@types/express": "^5.0.1",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2"
+  },
+  "engines": {
+    "node": ">=20.11.1"
+  },
+  "types": "./global.d.ts",
+  "tsd": {
+    "directory": "./global.d.ts"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  }
+}

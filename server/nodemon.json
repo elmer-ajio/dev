@@ -1,0 +1,18 @@
+{
+    "watch": ["dist"],
+    "ext": "js",
+    "exec": "node dist/src/index.js",
+    "ignore": ["node_modules"],
+    "verbose": true,
+    "delay": "1000",
+    "restartable": "rs",
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "events": {
+      "start": "echo 'Nodemon started'",
+      "crash": "echo 'Nodemon crashed'",
+      "exit": "echo 'Nodemon exited'"
+    }
+  }
+  
