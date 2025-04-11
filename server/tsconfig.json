@@ -34,10 +34,5 @@
   "include": ["global.d.ts", "src/**/*.ts", "prisma/**/*.ts"],
   "references": [],
   "compileOnSave": false,
-  "exclude": [
-    "node_modules",
-    "**/node_modules/*",
-    "src/database/config.js",
-    "dist"
-  ]
+  "exclude": ["node_modules", "**/node_modules/*", "dist"]
 }

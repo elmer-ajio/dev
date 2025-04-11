@@ -66,3 +66,4 @@ This document provides a comprehensive list of useful Prisma CLI commands, categ
 ## Environment Variables
 
 Ensure your database connection string is set in the `.env` file as `DATABASE_URL`. For example:
+DATABASE_URL="postgresql://user:password@host:port/dbname"

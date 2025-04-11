@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-
 const prisma = new PrismaClient()
 
 async function main() {
@@ -15,8 +14,8 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
-    console.error('❌ Error seeding:', e)
+  .catch((error) => {
+    console.error('❌ Error seeding:', error)
     process.exit(1)
   })
   .finally(async () => {

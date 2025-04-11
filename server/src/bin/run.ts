@@ -5,8 +5,7 @@ import os from "os";
 import path from "path";
 readEnv();
 const numCPUs: number = process.env.NODE_ENV === "development" ? 1 : os.cpus().length;
-const app = path.join(path.dirname(import.meta.url), 'app.js`');
-
+const app = path.join(__dirname, "app.js");
 
 cluster.setupPrimary({
     exec: app,

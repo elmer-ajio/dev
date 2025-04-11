@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 "use strict";
- import path from "path";
+import path from "path";
 
- const run = path.join(path.dirname(import.meta.url), 'bin/app.js');
-
- (async () => {
+  const run = path.join(__dirname, "bin/run.js");
+  
+  (async () => {
     try {
       await import(run);
     } catch (error) {

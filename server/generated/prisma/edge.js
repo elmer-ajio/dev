@@ -149,11 +149,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://postgres:mysecretpassword@127.0.1:5432/ajio?schema=public"
+        "value": null
       }
     }
   },
