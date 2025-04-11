@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
-
+import { PrismaClient } from '@src/database/prisma';
+import { constant } from '@src/resources';
 
 const prisma = new PrismaClient();
+
 
 class UserController {
   async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -11,7 +12,10 @@ class UserController {
       const user = await prisma.user.create({
         data: { name },
       });
-      res.status(201).json(user);
+      res.status(200).json({
+        message: constant.USER_CREATED,
+        user,
+      });
     } catch (error) {
       next(error)
     }
@@ -23,7 +27,10 @@ class UserController {
         where: { deleted_at: null },
         orderBy: { created_at: 'desc' },
       });
-      res.json(users);
+      res.status(200).json({
+        message: constant.USER_UPDATED,
+        users,
+      });
     } catch (error) {
         next(error)
     }
@@ -36,10 +43,16 @@ class UserController {
         where: { id },
       });
       if (!user || user.deleted_at) {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({
+            message: constant.USER_NOT_FOUND,
+            user: null,
+         });
         return;
       }
-      res.json(user);
+      res.status(200).json({
+        message: constant.USER_UPDATED,
+        user,
+      });
     } catch (error) {
         next(error)
     }
@@ -54,7 +67,10 @@ class UserController {
         where: { id },
         data: { name, updated_at: new Date() },
       });
-      res.json(user);
+    res.status(200).json({
+        message: constant.USER_UPDATED,
+        user,
+    });
     } catch (error) {
         next(error)
     }
@@ -67,7 +83,7 @@ class UserController {
         where: { id },
         data: { deleted_at: new Date(), updated_at: new Date() },
       });
-      res.json({ message: 'User soft-deleted', user });
+      res.status(200) .json({ message: constant.USER_DELETED, user });
     } catch (error) {
         next(error)
     }

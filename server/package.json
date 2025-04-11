@@ -12,9 +12,6 @@
     "watch-compile": "swc src -w -d dist",
     "watch-dev": "nodemon --watch \"dist/**/*\" -e js dist/src/index.js"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
   "dependencies": {
     "@prisma/client": "^6.6.0",
     "@types/node": "^22.14.0",
@@ -31,6 +28,7 @@
     "@types/express": "^5.0.1",
     "concurrently": "^9.1.2",
     "nodemon": "^3.1.9",
+    
     "ts-node": "^10.9.2"
   },
   "engines": {
