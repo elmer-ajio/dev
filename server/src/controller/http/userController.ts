@@ -43,7 +43,7 @@ class UserController {
 
   async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = BigInt(req.params.id);
+      const id = Number(req.params.id);
       const user = await prisma.user.findUnique({
         where: { id },
       });
