@@ -24,7 +24,7 @@ const state: ConfigState  = {
   
     PORT: Number(process.env.PORT),
 
-    CORS_ORIGIN: [],
+    CORS_ORIGIN: [process.env.CORS_CLIENT_ORIGIN!],
 
     contentSecurityPolicy: ContentSecurityPolicy.replace(/\s{2,}/g, " ").trim(),
 

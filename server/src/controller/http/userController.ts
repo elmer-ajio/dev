@@ -2,12 +2,16 @@ import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@src/database/prisma';
 import { constant } from '@src/resources';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ['query', 'info', 'warn', 'error'],
+
+});
 
 
 class UserController {
   async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+     
       const { name } = req.body;
       const user = await prisma.user.create({
         data: { name },
@@ -32,6 +36,7 @@ class UserController {
         users,
       });
     } catch (error) {
+      console.log(error);
         next(error)
     }
   }
@@ -60,30 +65,33 @@ class UserController {
 
   async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = BigInt(req.params.id);
+      const id = Number(req.params.id);
+      
       const { name } = req.body;
+      
 
-      const user = await prisma.user.update({
+      await prisma.user.update({
         where: { id },
         data: { name, updated_at: new Date() },
       });
     res.status(200).json({
         message: constant.USER_UPDATED,
-        user,
+       
     });
     } catch (error) {
+     
         next(error)
     }
   }
 
   async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = BigInt(req.params.id);
-      const user = await prisma.user.update({
+      const id = Number(req.params.id);
+      await prisma.user.update({
         where: { id },
         data: { deleted_at: new Date(), updated_at: new Date() },
       });
-      res.status(200) .json({ message: constant.USER_DELETED, user });
+      res.status(200).json({ message: constant.USER_DELETED });
     } catch (error) {
         next(error)
     }

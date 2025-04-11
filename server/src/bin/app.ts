@@ -7,6 +7,8 @@ import cors from "cors";
 import { route } from "@src/routes";
 import { config } from "@src/config";
 import { errorHandler } from "@src/error";
+import { Logger } from "@src/lib";
+
 
 (() => {
   
@@ -59,6 +61,8 @@ import { errorHandler } from "@src/error";
         res.setHeader("X-Content-Security-Policy", xContentSecurityPolicy);
         next();
       });
+
+      app.use(Logger.middleware());
 
       app.use(cors(corsOptions));
   
