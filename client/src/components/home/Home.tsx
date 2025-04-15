@@ -25,20 +25,27 @@ import {
   useTheme,
 } from "@mui/material";
 import { Edit, Delete, Add, Search } from "@mui/icons-material";
-import { apiHandler } from "@/src/utils";
-import { env } from "@/src/config";
 
-
-
+import { shallowEqual, useSelector, useDispatch } from "react-redux";
+import { State, AppDispatch } from "@/src/state/store/store";
+import {
+  fetchUsersAction,
+  createUserAction,
+  updateUserAction,
+  deleteUserAction,
+} from "@/src/state/store/user/action";
 
 const Home = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const abortController = useRef<null | AbortController>(null)
-  
 
-  // State management
-  const [users, setUsers] = useState<User[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const { users } = useSelector((state: State) => {
+    return {
+      users: state.users,
+    };
+  }, shallowEqual);
+
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,186 +56,27 @@ const Home = () => {
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
-  // Fetch users from API
-  const fetchUsers = async () => {
-    try {
-
-      abortController.current = new AbortController();
-
-      setLoading(true);
-      setError(null);
-
-      
-      const response = await apiHandler({
-        url: `${env.apiHost}/api/v1/user-getAll`,
-        method: "GET",
-        signal: abortController.current?.signal,
-        header: {
-          "Content-Type": "application/json",
-        },
-      });
-      abortController.current = null;
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setUsers(data.users);
-      setFilteredUsers(data.users);
-      
-    } catch (err) {
-      setError("Failed to fetch users. Please try again.");
-      console.error("Error fetching users:", err);
-
-     
-        
-        abortController.current = null;
-
-    
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Initial data load
   useEffect(() => {
-    fetchUsers();
-
-    return () => {
-      if(abortController.current) {
-        
-        abortController.current = null;
-
-      }
-    };
+    dispatch(fetchUsersAction());
   }, []);
 
-  // Filter users based on search term
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredUsers(users);
-    } else {
-      setFilteredUsers(
-        users.filter(user =>
-          user.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    }
-  }, [searchTerm, users]);
-
-  // API functions
   const createUser = async (userData: { name: string }) => {
-    try {
-      setFormLoading(true);
-      setFormError(null);
-
-      abortController.current = new AbortController();
-
-      const response = await apiHandler({
-        url: `${env.apiHost}/api/v1/user-create`,
-        method: "POST",
-        body: JSON.stringify({...userData}), 
-        header: {
-          "Content-Type": "application/json",
-        },
-        signal: abortController.current?.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-     
-      setUsers(prev => [ result.user, ...prev]);
-      setFilteredUsers(prev => [ result.user, ...prev]);
-      
-      abortController.current = null;
-
-    } catch (err) {
-      setFormError("Failed to create user. Please try again.");
-      
-      abortController.current = null;
-      throw err;
-    } finally {
-      setFormLoading(false);
-    }
+    dispatch(createUserAction(userData));
   };
 
   const updateUser = async (id: number, userData: { name: string }) => {
-    try {
-      setFormLoading(true);
-      setFormError(null);
-      abortController.current = new AbortController();
-
-      const response = await apiHandler({
-        url: `${env.apiHost}/api/v1/user-update/${id}`,
-        method: "POST",
-        body: JSON.stringify({ ...userData }) ,
-        header: {
-          "Content-Type": "application/json",
-        },
-        signal: abortController.current?.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      await response.json();
-      setUsers(prev =>
-        prev.map(user => (user.id === id ? { ...user, ...userData } : user))
-      );
-      setFilteredUsers(prev =>
-        prev.map(user => (user.id === id ? { ...user, ...userData } : user))
-      );
-
-      abortController.current = null;
-
-    } catch (err) {
-      setFormError("Failed to update user. Please try again.");
-      abortController.current = null;
-      throw err;
-    } finally {
-      setFormLoading(false);
-    }
+    dispatch(
+      updateUserAction({
+        id,
+        name: userData.name,
+      })
+    );
   };
 
   const deleteUser = async (id: number) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      abortController.current = new AbortController();
-
-      const response = await apiHandler({
-        url: `${env.apiHost}/api/v1/user-delete/${id}`,
-      
-        method: "DELETE",
-        body: JSON.stringify({  }),
-        header: {
-          "Content-Type": "application/json",
-        },
-
-        signal: abortController.current?.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-       await response.json();
-      setUsers(prev => prev.filter(user => user.id !== id));
-      setFilteredUsers(prev => prev.filter(user => user.id !== id));
-      abortController.current = null;
-    } catch (err) {
-      setError("Failed to delete user. Please try again.");
-      abortController.current = null;
-    } finally {
-      setLoading(false);
-    }
+    dispatch(deleteUserAction(id));
   };
 
-  // UI handlers
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -261,7 +109,7 @@ const Home = () => {
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -269,7 +117,7 @@ const Home = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       if (currentUser) {
         await updateUser(currentUser.id, formData);
@@ -302,7 +150,7 @@ const Home = () => {
         <Typography variant="h5" component="h1">
           User Management
         </Typography>
-        
+
         <Box
           sx={{
             display: "flex",
@@ -344,8 +192,15 @@ const Home = () => {
       )}
 
       {/* Users Table */}
-      <TableContainer component={Paper} sx={{ maxHeight: "calc(100vh - 200px)", overflow: "auto" }}>
-        <Table stickyHeader aria-label="users table" size={isMobile ? "small" : "medium"}>
+      <TableContainer
+        component={Paper}
+        sx={{ maxHeight: "calc(100vh - 200px)", overflow: "auto" }}
+      >
+        <Table
+          stickyHeader
+          aria-label="users table"
+          size={isMobile ? "small" : "medium"}
+        >
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
@@ -360,25 +215,35 @@ const Home = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (
+            {users.userData.loading ? (
               <TableRow>
-                <TableCell colSpan={isMobile ? 3 : 5} align="center" sx={{ py: 5 }}>
+                <TableCell
+                  colSpan={isMobile ? 3 : 5}
+                  align="center"
+                  sx={{ py: 5 }}
+                >
                   <CircularProgress />
                   <Typography variant="body2" sx={{ mt: 2 }}>
                     Loading users...
                   </Typography>
                 </TableCell>
               </TableRow>
-            ) : filteredUsers.length === 0 ? (
+            ) : users.userData.userList.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={isMobile ? 3 : 5} align="center" sx={{ py: 5 }}>
+                <TableCell
+                  colSpan={isMobile ? 3 : 5}
+                  align="center"
+                  sx={{ py: 5 }}
+                >
                   <Typography variant="body2" color="textSecondary">
-                    {searchTerm ? "No matching users found" : "No users available"}
+                    {searchTerm
+                      ? "No matching users found"
+                      : "No users available"}
                   </Typography>
                 </TableCell>
               </TableRow>
             ) : (
-              filteredUsers.map(user => (
+              users.userData.userList.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.name}</TableCell>
@@ -390,10 +255,9 @@ const Home = () => {
                   )}
                   <TableCell align="right">
                     <Tooltip title="Edit">
-                      <IconButton 
-                        onClick={() => handleEditUser(user)} 
+                      <IconButton
+                        onClick={() => handleEditUser(user)}
                         size={isMobile ? "small" : "medium"}
-                        disabled={loading}
                       >
                         <Edit color="primary" />
                       </IconButton>
@@ -402,7 +266,6 @@ const Home = () => {
                       <IconButton
                         onClick={() => handleDeleteUser(user.id)}
                         size={isMobile ? "small" : "medium"}
-                        disabled={loading}
                       >
                         <Delete color="error" />
                       </IconButton>
@@ -416,7 +279,12 @@ const Home = () => {
       </TableContainer>
 
       {/* Add/Edit User Dialog */}
-      <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm">
+      <Dialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>{currentUser ? "Edit User" : "Add New User"}</DialogTitle>
         <form onSubmit={handleFormSubmit}>
           <DialogContent>

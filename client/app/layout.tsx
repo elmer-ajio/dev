@@ -1,9 +1,6 @@
 
+import { Provider } from "@/src/state";
 import { ThemeRepository } from "@/src/theme";
-
-
-
-
 
 export default function RootLayout({
   children,
@@ -13,9 +10,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ThemeRepository>
-        {children}
-        </ThemeRepository>
+        <Provider>
+          <ThemeRepository>
+             {children}
+          </ThemeRepository>
+        </Provider>
       </body>
     </html>
   );
