@@ -14,6 +14,7 @@ import DialogTitle from "./DialogTitle/DialogTitle";
 import IconButton from "./IconButton/IconButton";
 import Modal from "./Modal/Modal";
 import Paper from "./Paper/Paper";
+import Skeleton from "./Skeleton/Skeleton";
 import Table from "./Table/Table";
 import TableBody from "./TableBody/TableBody";
 import TableCell from "./TableCell/TableCell";
@@ -35,6 +36,7 @@ export {
   IconButton,
   Modal,
   Paper,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
