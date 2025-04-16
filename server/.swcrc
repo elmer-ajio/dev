@@ -14,7 +14,7 @@
     "loose": false,
     "externalHelpers": false,
     "keepClassNames": false,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@*": ["./*"]
     }

@@ -1,0 +1,25 @@
+{
+    "useTabs": false,
+    "printWidth": 80,
+    "tabWidth": 2,
+    "singleQuote": false,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "jsxSingleQuote": false,
+    "semi": true,
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "htmlWhitespaceSensitivity": "css",
+    "singleAttributePerLine": false,
+    "bracketSameLine": false,
+    "quoteProps": "as-needed",
+    "embeddedLanguageFormatting": "auto",
+    "editor.formatOnSave": true,
+    "[javascript]": {
+      "editor.formatOnSave": true
+    },
+    "[typescript]": {
+      "editor.formatOnSave": true
+    }
+  }
+  
