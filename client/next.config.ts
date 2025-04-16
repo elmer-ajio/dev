@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   env: {
     API_HOST: process.env.API_HOST,
-  
   },
 };
 
