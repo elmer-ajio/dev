@@ -10,15 +10,6 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Tooltip,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   CircularProgress,
   Alert,
   useMediaQuery,
@@ -34,6 +25,8 @@ import {
   updateUserAction,
   deleteUserAction,
 } from "@/src/state/store/user/action";
+import { CustomDialog, CustomTable } from "../_custom";
+import { Button, TextField, Typography, Tooltip, Box } from "@/src/html";
 
 const Home = () => {
   const theme = useTheme();
@@ -69,7 +62,7 @@ const Home = () => {
       updateUserAction({
         id,
         name: userData.name,
-      })
+      }),
     );
   };
 
@@ -160,7 +153,7 @@ const Home = () => {
           }}
         >
           <TextField
-            size="small"
+            variant="outlined"
             placeholder="Search users..."
             InputProps={{
               startAdornment: <Search color="action" sx={{ mr: 1 }} />,
@@ -192,7 +185,7 @@ const Home = () => {
       )}
 
       {/* Users Table */}
-      <TableContainer
+      {/* <TableContainer
         component={Paper}
         sx={{ maxHeight: "calc(100vh - 200px)", overflow: "auto" }}
       >
@@ -276,54 +269,35 @@ const Home = () => {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
+      <CustomTable tableHeader={["id", "name"]} tableData={[]} tableInfo="" />
 
       {/* Add/Edit User Dialog */}
-      <Dialog
+      <CustomDialog
         open={openDialog}
         onClose={handleDialogClose}
-        fullWidth
-        maxWidth="sm"
-      >
-        <DialogTitle>{currentUser ? "Edit User" : "Add New User"}</DialogTitle>
-        <form onSubmit={handleFormSubmit}>
-          <DialogContent>
-            {formError && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {formError}
-              </Alert>
-            )}
-            <TextField
-              autoFocus
-              margin="dense"
-              name="name"
-              label="User Name"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={formData.name}
-              onChange={handleFormChange}
-              required
-              disabled={formLoading}
-              sx={{ mt: 1 }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose} disabled={formLoading}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              color="primary"
-              variant="contained"
-              disabled={formLoading}
-              startIcon={formLoading ? <CircularProgress size={20} /> : null}
-            >
-              {currentUser ? "Update" : "Create"}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
+        title={currentUser ? "Edit User" : "Add New User"}
+        actions={[
+          <Button onClick={handleDialogClose}>Cancel</Button>,
+          <Button onClick={handleFormSubmit}>Save</Button>,
+        ]}
+        content={
+          <TextField
+            autoFocus
+            margin="dense"
+            name="name"
+            label="User Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={formData.name}
+            onChange={handleFormChange}
+            required
+            disabled={formLoading}
+            sx={{ mt: 1 }}
+          />
+        }
+      />
     </Box>
   );
 };

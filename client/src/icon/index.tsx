@@ -1,0 +1,3 @@
+/**
+ * Centralize icon
+ */

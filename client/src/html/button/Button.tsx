@@ -23,9 +23,10 @@ interface ButtonProps extends MuiButtonProps {
   muiProps?: MuiButtonProps;
 }
 
-const CustomButton = styled(MuiButton, {
-  shouldForwardProp: (prop) => prop !== "fontSize",
-})<{ fontSize?: number | string }>(({ theme, fontSize }) => ({
+const CustomButton = styled(
+  MuiButton,
+  {}
+)<{}>(({ theme }) => ({
   textTransform: "none",
   "&.Mui-disabled": {
     pointerEvents: "auto",
